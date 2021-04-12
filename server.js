@@ -34,7 +34,7 @@ app.post('/api/notes', (req, res) => {
         const newNote = {
             title: req.body.title,
             text: req.body.text,
-            id: notesDbContent.length.toString(),
+            id: Math.random().toString(36).substr(8),//found on stackOverflow
         }
         notesDbContent.push(newNote);
         // console.log(newNote);
