@@ -8,7 +8,7 @@ const notesDbPath = './db/db.json'
 //app setup
 const app = express();
 const PORT = process.env.PORT || 3000;
-app.use(express.urlencoded({ extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('./public'))
 
@@ -16,29 +16,34 @@ app.use(express.static('./public'))
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, './public/index.html')));
 app.get('/notes', (req, res) => res.sendFile(path.join(__dirname, './public/notes.html')))
 
-let notesDbContent = [];
-fs.readFile(notesDbPath, 'utf8', (err, data)=>{
-    if(err) throw err;
-    notesDbContent.push(data);
-    console.log(notesDbContent);
-});
 
 //api routes
 app.get('/api/notes', (req, res) => {
-    fs.readFile(notesDbPath, 'utf8', (err, data)=>{
+    fs.readFile(notesDbPath, 'utf8', (err, data) => {
         if (err) throw err;
         res.json(JSON.parse(data))
     });
 });
 
 app.post('/api/notes', (req, res) => {
-    const newNote = req.body;
-    notesDbContent.push(newNote);
-    // console.log(newNote);
-    fs.writeFile(notesDbPath, JSON.stringify(notesDbContent), 'utf8', (err) => {
-        if (err) throw (err);
+    
+    fs.readFile(notesDbPath, 'utf8', (err, data) => {
+        if (err) throw err;
+        let notesDbContent = JSON.parse(data);
+        console.log('dbContents:' + notesDbContent);
+
+
+        const newNote = {
+            title: req.body.title,
+            text: req.body.text,
+        }
+        notesDbContent.push(newNote);
+        // console.log(newNote);
+        fs.writeFile(notesDbPath, JSON.stringify(notesDbContent), 'utf8', (err) => {
+            if (err) throw (err);
+        })
     })
-})
+});
 
 //start server
 app.listen(PORT, () => console.log(`App listening on PORT ${PORT}`));
