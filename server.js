@@ -25,6 +25,22 @@ app.get('/api/notes', (req, res) => {
     });
 });
 
+app.get('/api/notes/:id', (req, res) => {
+    fs.readFile(notesDbPath, 'utf8', (err, data) => {
+        if (err) throw err;
+        
+        const id = req.params.id;
+        const note = JSON.parse(data);
+        let index;
+        for (obj of note) {
+            if(obj.id === id) {
+                index = note.indexOf(obj)
+            }
+        }
+        res.json(note[index])
+    });
+});
+
 app.post('/api/notes', (req, res) => {
     
     fs.readFile(notesDbPath, 'utf8', (err, data) => {
@@ -34,24 +50,27 @@ app.post('/api/notes', (req, res) => {
         const newNote = {
             title: req.body.title,
             text: req.body.text,
-            id: Math.random().toString(36).substr(8),//found on stackOverflow
+            id: Math.random().toString(36).substr(8),
+            //random string generator found on stackOverflow
         }
         notesDbContent.push(newNote);
         // console.log(newNote);
-        fs.writeFile(notesDbPath, JSON.stringify(notesDbContent), 'utf8', (err) => {
+        fs.writeFile(notesDbPath, JSON.stringify(notesDbContent), 'utf8', (err, data) => {
             if (err) throw (err);
+            res.json(JSON.parse(data))
         })
     })
 });
+
+
 
 app.delete('/api/notes/:id', (req, res) => {
     fs.readFile(notesDbPath, 'utf8', (err, data) => {
         if (err) throw err;
         let notesDbContent = JSON.parse(data);
+        const updatedDb = notesDbContent.splice(req.params.id, 1);
 
-        notesDbContent.splice(req.params.id, 1);
-
-        fs.writeFile(notesDbPath, JSON.stringify(notesDbContent), 'utf8', (err) => {
+        fs.writeFile(notesDbPath, JSON.stringify(updatedDb), 'utf8', (err) => {
             if (err) throw (err);
         })
     })
