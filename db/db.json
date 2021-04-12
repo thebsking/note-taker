@@ -1,6 +1,1 @@
-[
-    {
-        "title":"Test Title",
-        "text":"Test text"
-    }
-]{}["{title: 'title', text: 'note text'}"]
+["[\n    {\"title\":\"2321\",\"text\":\"asdf321321\"}\n]",{"title":"new thing","text":"this is a new note that i am writing"}]
