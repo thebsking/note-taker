@@ -3,7 +3,7 @@ const { static } = require('express');
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-const notesDbPath = './db/db.json'
+const notesDbPath = '/db/db.json'
 
 //app setup
 const app = express();
