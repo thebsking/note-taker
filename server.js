@@ -65,17 +65,24 @@ app.post('/api/notes', (req, res) => {
 
 
 
-// app.delete('/api/notes/:id', (req, res) => {
-//     fs.readFile(notesDbPath, 'utf8', (err, data) => {
-//         if (err) throw err;
-//         let notesDbContent = JSON.parse(data);
-//         const updatedDb = notesDbContent.splice(req.params.id, 1);
-
-//         fs.writeFile(notesDbPath, JSON.stringify(updatedDb), 'utf8', (err) => {
-//             if (err) throw (err);
-//         })
-//     })
-// })
+app.delete('/api/notes/:id', (req, res) => {
+    fs.readFile(notesDbPath, 'utf8', (err, data) => {
+        if (err) throw err;
+        console.log(req.params.id)
+        let notesDbContent = JSON.parse(data);
+        for (elem of notesDbContent) {
+            if(elem.id === req.params.id){
+                const index = notesDbContent.indexOf(elem);
+                notesDbContent.splice(index, 1);
+                fs.writeFile(notesDbPath, JSON.stringify(notesDbContent), 'utf8', (err) => {
+                    if (err) throw (err);
+                    res.json(JSON.stringify(data))
+                })
+            }
+        }
+        
+    })
+})
 
 //start server
 app.listen(PORT, () => console.log(`App listening on PORT ${PORT}`));
